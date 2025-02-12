@@ -1,19 +1,32 @@
 package com.example.pokedani.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.pokedani.model.Pokemon
-import com.example.pokedani.service.PokemonRepository
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.pokedani.R
 import com.example.pokedani.ui.theme.PokeDaniTheme
+import kotlinx.coroutines.delay
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity(){
     @OptIn(ExperimentalMaterial3Api::class)
@@ -21,76 +34,71 @@ class MainActivity : ComponentActivity(){
         super.onCreate(savedInstanceState)
         setContent {
             PokeDaniTheme {
-                // Usamos Scaffold para estructurar la pantalla con un TopAppBar
-                Scaffold(
-                    topBar = {
-                        TopAppBar(title = { Text("Pokémon disponibles") })
-                    }
-                ) { paddingValues ->
-                    PokemonScreen(modifier = Modifier.padding(paddingValues))
+                val navController = rememberNavController()
+                NavHost(navController, startDestination = "main") {
+                    composable("main") { MainScreen(navController) }
+                    composable("menuPokemon") { PokemonScreen(navController) }
                 }
             }
         }
     }
 }
 
-/**
- *
- * PokemonScreen: Pantalla que muestra la lista de Pokémon.
- * Realiza la petición a la API y muestra un indicador de carga o error si es necesario.
- *
- */
-
 @Composable
-fun PokemonScreen(modifier: Modifier = Modifier) {
-    // Estado que almacena la lista de Pokémon
-    var pokemons by remember { mutableStateOf<List<Pokemon>>(emptyList()) }
-    // Estado que indica si se está cargando la información
-    var loading by remember { mutableStateOf(false) }
-    // Estado para almacenar un posible mensaje de error
-    var errorMessage by remember { mutableStateOf("") }
+fun MainScreen(navController: NavHostController) {
+    val backgroundColor = Color(0xFFF5E1C3)
+    var isLoading by remember { mutableStateOf(false) }
 
-    // Lanzamos la petición al iniciarse la pantalla
-    // LaunchedEffect se ejecuta una única vez al iniciar el Composable
-    LaunchedEffect(Unit) {
-        loading = true // Indicamos que se inicia la carga
-        try {
-            // Llamada a la función del Repository para obtener la lista de Pokémon
-            val response = PokemonRepository.fetchPokemons()
-            pokemons = response.results
-        } catch (e: Exception) {
-            // En caso de error, se almacena el mensaje de error
-            errorMessage = e.message ?: "Error desconocido"
-        } finally {
-            // Finaliza la carga
-            loading = false
-        }
-    }
-
-    // Estructura principal de la pantalla: una columna que ocupa todo el tamaño disponible
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Se evalúan los estados para mostrar el contenido adecuado
-        when {
-            loading -> {
-                // Mientras se carga la información, se muestra un indicador de progreso centrado
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-            // Si hay un error, se muestra el mensaje de error
-            errorMessage.isNotEmpty() -> {
-                Text(text = "Error: $errorMessage", color = MaterialTheme.colorScheme.error)
-            }
-            else -> {
-                // Cuando se han obtenido los datos, se muestra la lista de Pokémon utilizando LazyColumn
-                LazyColumn {
-                    // Para cada Pokémon en la lista se invoca el Composable PokemonItem
-                    items(pokemons) { pokemon ->
-                        PokemonItem(pokemon)
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.pokedanilogo),
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = colorResource(id = R.color.white),
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
+                    LaunchedEffect(Unit) {
+                        val delayTime = Random.nextLong(2000, 5000)
+                        delay(delayTime)
+                        navController.navigate("menuFrutas")
+                    }
+                } else {
+                    Button(
+                        onClick = {
+                            isLoading = true
+                        },
+                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.teal_700)),
+                        modifier = Modifier
+                            .padding(bottom = 32.dp)
+                            .size(width = 200.dp, height = 60.dp)
+                    ) {
+                        Text(
+                            text = "Comenzar",
+                            color = colorResource(id = R.color.black),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
                     }
                 }
             }
@@ -98,19 +106,15 @@ fun PokemonScreen(modifier: Modifier = Modifier) {
     }
 }
 
-/**
- * PokemonItem: Composable que muestra la información de un Pokémon.
- * Se muestra dentro de una Card con un Row que contiene el nombre del Pokémon.
- */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Preview(showBackground = true)
 @Composable
-fun PokemonItem(pokemon: Pokemon) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    ) {
-        Row(modifier = Modifier.padding(16.dp)) {
-            Text(text = pokemon.name)
+fun MainScreenPreview() {
+    PokeDaniTheme  {
+        val navController = rememberNavController()
+        Scaffold {
+            MainScreen(navController)
         }
     }
 }
+
