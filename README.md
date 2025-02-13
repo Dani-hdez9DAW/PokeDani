@@ -1,18 +1,27 @@
 # PokeDani 🐾
+
 ![Logo de Glorifrutas](app/src/main/res/drawable/pokedanilogo.png)
-¡Bienvenido a PokeDani! Esta aplicación para Android te permite obtener información detallada sobre Pokémon utilizando una API y filtrar los resultados por nombre. 🌟
+¡Bienvenido a PokeDani! Esta aplicación para Android te permite obtener información detallada sobre
+Pokémon utilizando una API y filtrar los resultados por nombre. 🌟
 
 ## Características 🌟
 
 - Obtener información completa de Pokémon 🎮
 - Filtrar resultados por nombre 🔍
 - Interfaz amigable y fácil de usar 📱
+- Musica de fondo en la aplicacion 🎵
 
 ## Requisitos 📋
 
 - Android Studio
 - Gradle
 - Conexión a Internet
+-
+
+## Version de Android
+
+- **Koala Feature Drop 🐨 (AGP 8.6.0)**
+- **Si tienes un AGP anterior, no arrancará la aplicacion**
 
 ## Instalación 🛠️
 
@@ -27,7 +36,8 @@
 ## Uso 🚀
 
 1. Conecta un dispositivo Android o usa un emulador.
-2. Haz clic en el botón 'Run' en Android Studio para instalar y ejecutar la aplicación en el dispositivo seleccionado.
+2. Haz clic en el botón 'Run' en Android Studio para instalar y ejecutar la aplicación en el
+   dispositivo seleccionado.
 
 ## API 🔗
 
@@ -56,8 +66,10 @@ La aplicación utiliza la siguiente API para obtener información sobre los Pok�
 
 ## Licencia 📜
 
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más
+detalles.
 
 ---
 
-¡Gracias por usar PokeDani! Si tienes alguna pregunta o sugerencia, no dudes en ponerte en contacto. ¡Atrapa a todos! 🎉
+¡Gracias por usar PokeDani! Si tienes alguna pregunta o sugerencia, no dudes en ponerte en contacto.
+¡Atrapa a todos! 🎉
