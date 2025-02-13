@@ -16,7 +16,6 @@ Pokémon utilizando una API y filtrar los resultados por nombre. 🌟
 - Android Studio
 - Gradle
 - Conexión a Internet
--
 
 ## Version de Android
 
