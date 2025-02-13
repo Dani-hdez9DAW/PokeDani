@@ -1,71 +1,83 @@
 package com.example.pokedani.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.pokedani.model.Pokemon
 import com.example.pokedani.service.PokemonRepository
+import java.util.Locale
+
 @Composable
 fun PokemonScreen(navController: NavHostController) {
     var modifier = Modifier
-    // Estado que almacena la lista de Pokémon
     var pokemons by remember { mutableStateOf<List<Pokemon>>(emptyList()) }
-    // Estado que indica si se está cargando la información
     var loading by remember { mutableStateOf(false) }
-    // Estado para almacenar un posible mensaje de error
     var errorMessage by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
-    // Lanzamos la petición al iniciarse la pantalla
-    // LaunchedEffect se ejecuta una única vez al iniciar el Composable
     LaunchedEffect(Unit) {
-        loading = true // Indicamos que se inicia la carga
+        loading = true
         try {
-            // Llamada a la función del Repository para obtener la lista de Pokémon
             val response = PokemonRepository.fetchPokemons()
             pokemons = response.results
         } catch (e: Exception) {
-            // En caso de error, se almacena el mensaje de error
             errorMessage = e.message ?: "Error desconocido"
         } finally {
-            // Finaliza la carga
             loading = false
         }
     }
 
-    // Estructura principal de la pantalla: una columna que ocupa todo el tamaño disponible
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(Color(0xFFFFD700))
             .padding(16.dp)
     ) {
-        // Se evalúan los estados para mostrar el contenido adecuado
+        // Barra de búsqueda
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            label = { Text(text = "Buscar Pokémon") },
+            leadingIcon = {
+                Icon(Icons.Filled.Search, contentDescription = "Buscar")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+        )
+
         when {
             loading -> {
-                // Mientras se carga la información, se muestra un indicador de progreso centrado
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-            // Si hay un error, se muestra el mensaje de error
             errorMessage.isNotEmpty() -> {
                 Text(text = "Error: $errorMessage", color = MaterialTheme.colorScheme.error)
             }
             else -> {
-                // Cuando se han obtenido los datos, se muestra la lista de Pokémon utilizando LazyColumn
+                val filteredPokemons = pokemons.filter { it.name.contains(searchQuery.text, ignoreCase = true) }
                 LazyColumn {
-                    // Para cada Pokémon en la lista se invoca el Composable PokemonItem
-                    items(pokemons) { pokemon ->
-                        PokemonItem(pokemon)
+                    items(filteredPokemons) { pokemon ->
+                        PokemonItem(navController, pokemon)
                     }
                 }
             }
@@ -73,22 +85,19 @@ fun PokemonScreen(navController: NavHostController) {
     }
 }
 
-/**
- * PokemonItem: Composable que muestra la información de un Pokémon.
- * Se muestra dentro de una Card con un Row que contiene el nombre del Pokémon.
- */
 fun getPokemonImageUrl(pokemonUrl: String): String {
-    // La URL contiene algo como "https://pokeapi.co/api/v2/pokemon/{id}/"
-    val pokemonId = pokemonUrl.split("/").filter { it.isNotEmpty() }.last() // Extrae el ID
+    val pokemonId = pokemonUrl.split("/").filter { it.isNotEmpty() }.last()
     return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$pokemonId.png"
 }
 
 @Composable
-fun PokemonItem(pokemon: Pokemon) {
+fun PokemonItem(navController: NavHostController, pokemon: Pokemon) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
+            .clickable { navController.navigate("PokemonItem/${pokemon.name}") },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFB0E0E6)) // Color Aqua suave
     ) {
         Row(
             modifier = Modifier
@@ -96,7 +105,6 @@ fun PokemonItem(pokemon: Pokemon) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Imagen del Pokémon (Coil)
             Image(
                 painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(LocalContext.current)
@@ -106,14 +114,13 @@ fun PokemonItem(pokemon: Pokemon) {
                 ),
                 contentDescription = "${pokemon.name} image",
                 modifier = Modifier
-                    .size(64.dp) // Tamaño de la imagen
+                    .size(64.dp)
                     .padding(end = 16.dp)
             )
 
-            // Nombre del Pokémon
             Text(
-                text = pokemon.name,
-                style = MaterialTheme.typography.bodyLarge
+                text = pokemon.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
         }
     }

@@ -6,6 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Path
 
 val retrofit: Retrofit = Retrofit.Builder()
     .baseUrl("https://pokeapi.co/api/v2/") // URL base solo con el dominio
@@ -23,7 +24,7 @@ interface ApiService {
     suspend fun getPokemons(): PokemonResponse
 
     @GET("pokemon/{name}")
-    suspend fun getPokemonDetail(@retrofit2.http.Path("name") name: String): PokemonDetail
+    suspend fun getPokemonDetail(@Path("name") name: String): PokemonDetail
 }
 
 object PokemonRepository {
@@ -31,14 +32,9 @@ object PokemonRepository {
     suspend fun fetchPokemons(): PokemonResponse {
         return apiService.getPokemons()
     }
-}
-object PokemonDetailRepository {
-    suspend fun fetchPokemons(): List<Unit> {
-        val response = apiService.getPokemons()
-        // Realiza una solicitud adicional para cada Pokémon y obtén los detalles
-        return response.results.map { pokemon ->
-            apiService.getPokemonDetail(pokemon.name)
-        }
+
+    // Función suspend para obtener los detalles de un Pokémon utilizando el apiService
+    suspend fun fetchPokemonDetail(name: String): PokemonDetail {
+        return apiService.getPokemonDetail(name)
     }
 }
-
