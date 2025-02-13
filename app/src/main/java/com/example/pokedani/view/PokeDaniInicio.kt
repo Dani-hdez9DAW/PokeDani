@@ -118,7 +118,7 @@ class PokeDaniInicio : ComponentActivity() {
                             onClick = {
                                 isLoading = true
                             },
-                            colors = ButtonDefaults.buttonColors((colorResource(id = R.color.amber_200))), // Color teal para complementar el fondo amarillo
+                            colors = ButtonDefaults.buttonColors((colorResource(id = R.color.amber_200))),
                             modifier = Modifier
                                 .padding(bottom = 32.dp)
                                 .size(width = 200.dp, height = 60.dp)

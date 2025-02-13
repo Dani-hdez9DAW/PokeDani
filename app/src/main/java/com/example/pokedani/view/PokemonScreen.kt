@@ -132,7 +132,7 @@ fun PokemonCard(navController: NavHostController, pokemon: Pokemon) {
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable { navController.navigate("PokemonItem/${pokemon.name}") },
-        colors = CardDefaults.cardColors(colorResource(id = R.color.teal_700)) // Color Aqua suave
+        colors = CardDefaults.cardColors(colorResource(id = R.color.teal_700))
     ) {
         Row(
             modifier = Modifier
