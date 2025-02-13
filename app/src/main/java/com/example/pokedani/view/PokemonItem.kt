@@ -1,5 +1,6 @@
 package com.example.pokedani.view
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +41,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.pokedani.R
 import com.example.pokedani.model.PokemonDetail
-import com.example.pokedani.service.PokemonRepository
+import com.example.pokedani.repository.PokemonRepository
 import java.util.Locale
 
 val typeColors = mapOf(
@@ -97,7 +99,15 @@ fun PokemonItem(navController: NavHostController, backStackEntry: NavBackStackEn
     var pokemonDetail by remember { mutableStateOf<PokemonDetail?>(null) }
     var loading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val mediaPlayer = remember { MediaPlayer.create(context, R.raw.pokedanimusic) }
 
+    DisposableEffect(Unit) {
+        mediaPlayer.start()
+        onDispose {
+            mediaPlayer.release()
+        }
+    }
     LaunchedEffect(pokemonName) {
         loading = true
         try {
@@ -137,6 +147,27 @@ fun PokemonItem(navController: NavHostController, backStackEntry: NavBackStackEn
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
+
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        color = Color.Gray,
+                                        shape = CircleShape
+                                    )
+                                    .padding(4.dp)
+                            ) {
+                                Text(
+                                    text = "${pokemonDetail!!.id}",
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+                        }
 
                         Box(
                             modifier = Modifier.fillMaxWidth(),
@@ -196,29 +227,6 @@ fun PokemonItem(navController: NavHostController, backStackEntry: NavBackStackEn
                             )
                         }
                         HorizontalDivider(thickness = 1.dp, color = Color.Black)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Nº Pokedex ",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = Color.Gray,
-                                        shape = CircleShape
-                                    )
-                                    .padding(4.dp)
-                            ) {
-                                Text(
-                                    text = "${pokemonDetail!!.id}",
-                                    color = Color.White,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
-                        }
 
                         Text(
                             text = "Altura: ${pokemonDetail!!.height / 10.0} m",

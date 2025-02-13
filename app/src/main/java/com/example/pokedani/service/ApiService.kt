@@ -27,14 +27,4 @@ interface ApiService {
     suspend fun getPokemonDetail(@Path("name") name: String): PokemonDetail
 }
 
-object PokemonRepository {
-    // Función suspend para obtener la lista de Pokémon utilizando el apiService
-    suspend fun fetchPokemons(): PokemonResponse {
-        return apiService.getPokemons()
-    }
 
-    // Función suspend para obtener los detalles de un Pokémon utilizando el apiService
-    suspend fun fetchPokemonDetail(name: String): PokemonDetail {
-        return apiService.getPokemonDetail(name)
-    }
-}

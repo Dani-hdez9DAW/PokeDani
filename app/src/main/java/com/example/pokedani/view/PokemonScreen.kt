@@ -1,5 +1,6 @@
 package com.example.pokedani.view
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,15 +33,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.example.pokedani.R
 import com.example.pokedani.model.Pokemon
-import com.example.pokedani.service.PokemonRepository
+import com.example.pokedani.repository.PokemonRepository
 import java.util.Locale
+import androidx.compose.ui.platform.LocalContext
+
 
 @Composable
 fun PokemonScreen(navController: NavHostController) {
@@ -48,7 +54,15 @@ fun PokemonScreen(navController: NavHostController) {
     var loading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+    val context = LocalContext.current
+    val mediaPlayer = remember { MediaPlayer.create(context, R.raw.pokemoninfomusic) }
 
+    DisposableEffect(Unit) {
+        mediaPlayer.start()
+        onDispose {
+            mediaPlayer.release()
+        }
+    }
     LaunchedEffect(Unit) {
         loading = true
         try {
@@ -97,7 +111,7 @@ fun PokemonScreen(navController: NavHostController) {
                     pokemons.filter { it.name.contains(searchQuery.text, ignoreCase = true) }
                 LazyColumn {
                     items(filteredPokemons) { pokemon ->
-                        PokemonItem(navController, pokemon)
+                        PokemonCard(navController, pokemon)
                     }
                 }
             }
@@ -112,13 +126,13 @@ fun getPokemonImageUrl(pokemonUrl: String): String {
 }
 
 @Composable
-fun PokemonItem(navController: NavHostController, pokemon: Pokemon) {
+fun PokemonCard(navController: NavHostController, pokemon: Pokemon) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable { navController.navigate("PokemonItem/${pokemon.name}") },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFB0E0E6)) // Color Aqua suave
+        colors = CardDefaults.cardColors(colorResource(id = R.color.teal_700)) // Color Aqua suave
     ) {
         Row(
             modifier = Modifier
@@ -141,6 +155,7 @@ fun PokemonItem(navController: NavHostController, pokemon: Pokemon) {
 
             Text(
                 text = pokemon.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+                color= Color.White,
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
         }
