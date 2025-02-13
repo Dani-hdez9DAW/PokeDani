@@ -19,7 +19,7 @@ interface ApiService {
         "Authorization: Bearer a13bfad9c4535d7b15a803c8383e3a8c",
         "Content-Type: application/json"
     )
-    @GET("pokemon") // El resto de la ruta va aquí
+    @GET("pokemon?limit=100000&offset=0") // El resto de la ruta va aquí
     suspend fun getPokemons(): PokemonResponse
 
     @GET("pokemon/{name}")

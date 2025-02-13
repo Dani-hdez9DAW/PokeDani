@@ -81,7 +81,7 @@ fun MainScreen(navController: NavHostController) {
                     LaunchedEffect(Unit) {
                         val delayTime = Random.nextLong(2000, 5000)
                         delay(delayTime)
-                        navController.navigate("menuFrutas")
+                        navController.navigate("menuPokemon")
                     }
                 } else {
                     Button(
