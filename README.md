@@ -29,11 +29,11 @@
 - 🐨 **Koala Feature Drop (AGP 8.6.0)**
 - ❌ **No compatible con versiones anteriores de AGP.**
 
-[!IMPORTANT] 
-Si usas un AGP anterior a **8.6.0**, la aplicación **no se iniciará**.
+>[!IMPORTANT] 
+>Si usas un AGP anterior a **8.6.0**, la aplicación **no se iniciará**.
 
-[!WARNING] 
-La aplicación requiere una conexión estable para funcionar correctamente. Sin Internet, no se podrá obtener la información de la API.
+>[!WARNING] 
+>La aplicación requiere una conexión estable para funcionar correctamente. Sin Internet, no se podrá obtener la información de la API.
 
 ---
 
@@ -47,8 +47,8 @@ La aplicación requiere una conexión estable para funcionar correctamente. Sin 
 3. **Sigue las instrucciones en pantalla** para importar el proyecto.
 4. **Sincroniza el proyecto** con Gradle.
 
-[!NOTE] 
-Es recomendable usar la versión más reciente de Android Studio para evitar problemas de compatibilidad.
+>[!NOTE] 
+>Es recomendable usar la versión más reciente de Android Studio para evitar problemas de compatibilidad.
 
 ---
 
@@ -65,8 +65,8 @@ La aplicación utiliza la siguiente API para obtener información sobre los Pok�
 
 - [PokeAPI](https://pokeapi.co/)
 
-[!TIP] 
-Consulta la documentación de la API para explorar más funciones y detalles sobre los datos disponibles.
+>[!TIP] 
+>Consulta la documentación de la API para explorar más funciones y detalles sobre los datos disponibles.
 
 ---
 
@@ -89,8 +89,8 @@ Consulta la documentación de la API para explorar más funciones y detalles sob
     ```
 5. **Abre un Pull Request.**
 
-[!NOTE] 
-Antes de enviar tu Pull Request, asegúrate de probar tu código para evitar errores.
+>[!NOTE] 
+>Antes de enviar tu Pull Request, asegúrate de probar tu código para evitar errores.
 
 ---
 
@@ -98,8 +98,8 @@ Antes de enviar tu Pull Request, asegúrate de probar tu código para evitar err
 
 Este proyecto está licenciado bajo la **Licencia MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
-[!INFO] 
-La Licencia MIT permite modificar y redistribuir el código con pocas restricciones, pero sin garantía del autor.
+>[!INFO] 
+>La Licencia MIT permite modificar y redistribuir el código con pocas restricciones, pero sin garantía del autor.
 
 ---
 
