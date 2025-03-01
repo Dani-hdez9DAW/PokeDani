@@ -13,8 +13,8 @@
 - 📱 **Interfaz amigable y fácil de usar**
 - 🎵 **Música de fondo en la aplicación**
 
-[!TIP] 
-Asegúrate de activar el sonido para disfrutar la experiencia completa con música de fondo.
+>[!TIP] 
+>Asegúrate de activar el sonido para disfrutar la experiencia completa con música de fondo.
 
 ---
 
